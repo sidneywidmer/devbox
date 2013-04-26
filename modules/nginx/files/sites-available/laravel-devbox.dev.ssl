@@ -1,7 +1,7 @@
 server {
     listen          443;
-    server_name     *.dev;
-    root            /var/www/$host/public;
+    server_name     ~^(?<subdomain>.+?)\.laravel-devbox.dev$;
+    root            /var/www/$subdomain/public;
 
     ssl                         on;
     ssl_certificate             /usr/share/nginx/certs/server.crt;
@@ -11,9 +11,8 @@ server {
     ssl_prefer_server_ciphers   on;
     ssl_protocols               SSLv2 SSLv3 TLSv1;
     ssl_ciphers                 HIGH:!aNULL:!MD5;
-    
+
     location / {
-        index       index.html index.htm index.php;
         try_files   $uri $uri/ /index.php?$query_string;
     }
 
@@ -21,7 +20,7 @@ server {
         fastcgi_pass    unix:/var/run/php5-fpm.sock;
         fastcgi_index   index.php;
         fastcgi_param   SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        fastcgi_param   HTTPS on; 
+        fastcgi_param   HTTPS on;
         include         fastcgi_params;
     }
 }
